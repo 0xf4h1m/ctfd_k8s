@@ -1,0 +1,34 @@
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: cloudflared
+#   namespace: ctfd
+#   labels:
+#     app: cloudflared
+# spec:
+#   replicas: 1
+#   selector:
+#     matchLabels:
+#       app: cloudflared
+#   template:
+#     metadata:
+#       labels:
+#         app: cloudflared
+#     spec:
+#       containers:
+#       - name: cloudflared
+#         image: cloudflare/cloudflared:latest
+#         imagePullPolicy: Always
+#         args:
+#         - tunnel
+#         - --no-autoupdate
+#         - run
+#         - --token
+#         - <INSERT_YOUR_CLOUDFLARE_TUNNEL_TOKEN_HERE>
+#         resources:
+#           requests:
+#             cpu: 10m
+#             memory: 64Mi
+#           limits:
+#             cpu: 100m
+#             memory: 128Mi

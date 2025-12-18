@@ -1,0 +1,72 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ctfd-deployment
+  namespace: ctfd
+  labels:
+    app: ctfd
+spec:
+  replicas: 2 # Start with 2 replicas
+  selector:
+    matchLabels:
+      app: ctfd
+  template:
+    metadata:
+      labels:
+        app: ctfd
+    spec:
+      securityContext:
+        runAsUser: 1001
+        runAsGroup: 1001
+        fsGroup: 1001
+      containers:
+        - name: ctfd
+          image: ctfd/ctfd:latest
+          imagePullPolicy: "Always"
+          ports:
+            - containerPort: 8000
+          envFrom:
+            - configMapRef:
+                name: ctfd-configmap
+          volumeMounts:
+            - name: ctfd-logs
+              mountPath: /var/log/CTFd
+            - name: ctfd-uploads
+              mountPath: /var/uploads
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "500m"
+            limits:
+              memory: "1Gi"
+              cpu: "1000m"
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 8000
+            initialDelaySeconds: 60
+            periodSeconds: 20
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8000
+            initialDelaySeconds: 30
+            periodSeconds: 10
+        # Sidecar for SOC monitoring agent.
+        # Replace this with your actual monitoring agent container.
+        - name: soc-monitoring-agent
+          image: busybox:latest
+          command: ["/bin/sh", "-c", "while true; do echo 'SOC Agent Running'; sleep 30; done"]
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "50m"
+            limits:
+              memory: "128Mi"
+              cpu: "100m"
+      volumes:
+        # For production, you should use a PersistentVolumeClaim for logs and uploads.
+        - name: ctfd-logs
+          emptyDir: {}
+        - name: ctfd-uploads
+          emptyDir: {}

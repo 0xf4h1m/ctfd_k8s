@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mysql-configmap
+  namespace: ctfd
+data:
+  MYSQL_DATABASE: "ctfd"

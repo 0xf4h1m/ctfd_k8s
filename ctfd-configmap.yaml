@@ -1,0 +1,43 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ctfd-configmap
+  namespace: ctfd
+data:
+  # This secret key should be replaced with a long random string.
+  # You can generate one with: openssl rand -hex 32
+  SECRET_KEY: "REPLACE_ME_WITH_OPENSSL_RAND_HEX_32"
+  DATABASE_URL: "mysql+pymysql://ctfd:REPLACE_ME_PASSWORD@mysql-svc:3306/ctfd"
+  # Set to "true" to allow users to register themselves.
+  # In a production environment, you might want to set this to "false"
+  # and create users manually.
+  REGISTRATION_VISIBILITY: "public"
+  # Set to "true" to require email confirmation.
+  # Requires mail server to be configured.
+  VERIFY_EMAILS: "true"
+  # Redis URL for caching and queuing.
+  # Example: "redis://redis-svc:6379"
+  # This is optional but recommended for production.
+  REDIS_URL: "redis://redis-svc:6379"
+  # Log folder for CTFd
+  LOG_FOLDER: "/var/log/CTFd"
+  # Upload folder for CTFd
+  UPLOAD_FOLDER: "/var/uploads"
+
+  # -----------------------------------------------------------------------
+  # Mail Server Configuration (SMTP)
+  # -----------------------------------------------------------------------
+  # The server to connect to (e.g., smtp.gmail.com, smtp.sendgrid.net)
+  MAIL_SERVER: "smtp.example.com"
+  # The port to use (typically 587 for TLS, 465 for SSL)
+  MAIL_PORT: "587"
+  # Whether to use TLS (True/False)
+  MAIL_USE_TLS: "true"
+  # Whether to use SSL (True/False)
+  MAIL_USE_SSL: "false"
+  # The username to log in with
+  MAIL_USERNAME: "user@example.com"
+  # The password to log in with
+  MAIL_PASSWORD: "password"
+  # The email address that messages are sent FROM
+  MAIL_DEFAULT_SENDER: "noreply@example.com"

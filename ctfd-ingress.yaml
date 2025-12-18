@@ -1,0 +1,26 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ctfd-ingress
+  namespace: ctfd
+  annotations:
+    # Use cert-manager to issue a certificate from Let's Encrypt.
+    # Replace with your Ingress controller's annotations if not using nginx.
+    kubernetes.io/ingress.class: "nginx"
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+spec:
+  tls:
+    - hosts:
+        - ctfd.example.com # Replace with your domain
+      secretName: ctfd-tls-secret # cert-manager will create this secret
+  rules:
+    - host: ctfd.example.com # Replace with your domain
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: ctfd-svc
+                port:
+                  number: 8000
